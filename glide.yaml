@@ -1,0 +1,4 @@
+package: github.com/plaroche/gogithub
+import:
+- package: github.com/google/go-github/github
+- package: golang.org/x/oauth2
