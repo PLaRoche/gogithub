@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"flag"
 	"fmt"
 	"github.com/google/go-github/github"
@@ -9,40 +10,43 @@ import (
 	"os"
 )
 
-// A message processes parameter and returns the result on responseChan.
-// ctx is places in a struct, but this is ok to do.
-type message struct {
-	responseChan chan<- int
-	parameter    string
-	ctx          context.Context
-}
-
 func main() {
 	var (
 		owner      = flag.String("o", "owner", "owner name")
 		repository = flag.String("r", "repository", "repositoryName")
 	)
 	flag.Parse()
-	commitids, err := getAllCommitID(*owner, *repository)
+
+	token, err := getToken()
 	if err != nil {
 		panic(err)
 	}
-	for _, commit := range commitids {
-		fmt.Println(commit)
+	// commitids, err := getAllCommitID(*owner, *repository, token)
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// for _, commit := range commitids {
+	// 	fmt.Println(commit)
+	// }
+
+	url, err := makeIssue(*owner, *repository, token)
+	if err != nil {
+		panic(err)
 	}
+	fmt.Println(url)
 
 }
 
-func getAllCommitID(owner, repo string) ([]string, error) {
-
-	var token = ""
+func getToken() (string, error) {
 
 	val, ok := os.LookupEnv("GITHUB_TOKEN")
 	if !ok {
-		fmt.Printf("GITHUB TOKEN not set")
-	} else {
-		token = val
+		return "", errors.New("Token not found")
 	}
+	return val, nil
+}
+
+func getAllCommitID(owner, repo string, token string) ([]string, error) {
 
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: token},
@@ -68,4 +72,31 @@ func getAllCommitID(owner, repo string) ([]string, error) {
 		opt.Page = resp.NextPage
 	}
 	return issueBody, nil
+}
+
+func makeIssue(owner, repo string, token string) (string, error) {
+
+	ts := oauth2.StaticTokenSource(
+		&oauth2.Token{AccessToken: token},
+	)
+	tc := oauth2.NewClient(oauth2.NoContext, ts)
+	client := github.NewClient(tc)
+	ctx := context.Background()
+
+	title := "Release v1.4.0"
+	message := "Release v1.4.0-rc.0"
+	body := &github.IssueRequest{
+		Title:    &title,
+		Body:     &message,
+		Assignee: &owner,
+		Labels:   &[]string{"ops"},
+	}
+
+	issue, _, err := client.Issues.Create(ctx, owner, repo, body)
+	if err != nil {
+		return "Issues.Create returned error", err
+	}
+
+	return issue.GetHTMLURL(), nil
+
 }

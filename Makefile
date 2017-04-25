@@ -25,9 +25,7 @@ BOOTSTRAP=\
 	github.com/gordonklaus/ineffassign \
 	github.com/tsenart/deadcode \
 	github.com/alecthomas/gometalinter \
-	github.com/jteeuwen/go-bindata/... \
-	golang.org/x/oauth2 \
-	github.com/google/go-github/github
+	github.com/jteeuwen/go-bindata/...
 
 $(BOOTSTRAP):
 	go get -u $@
