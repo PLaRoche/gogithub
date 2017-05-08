@@ -1,0 +1,10 @@
+{{define "Title" }}Test Release {{.Release}} {{end}}
+{{define "Assignee"}}plaroche{{end}}
+{{define "Message"}}
+Release {{.Release}}
+
+Release Criteria
+
+- [ ] Change Log prepared
+- [ ]
+{{end}}

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"errors"
 	"flag"
 	"fmt"
@@ -8,12 +9,20 @@ import (
 	"golang.org/x/net/context"
 	"golang.org/x/oauth2"
 	"os"
+	"text/template"
 )
+
+// IssueMessage : a simple struct to hold all the components of an issue
+type IssueMessage struct {
+	Release string //Message : of issue
+}
 
 func main() {
 	var (
 		owner      = flag.String("o", "owner", "owner name")
 		repository = flag.String("r", "repository", "repositoryName")
+		version    = flag.String("v", "version", "version tag")
+		fileName   = flag.String("f", "filename", "template file")
 	)
 	flag.Parse()
 
@@ -21,15 +30,8 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	// commitids, err := getAllCommitID(*owner, *repository, token)
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// for _, commit := range commitids {
-	// 	fmt.Println(commit)
-	// }
 
-	url, err := makeIssue(*owner, *repository, token)
+	url, err := makeIssue(*owner, *repository, *version, *fileName, token)
 	if err != nil {
 		panic(err)
 	}
@@ -74,7 +76,26 @@ func getAllCommitID(owner, repo string, token string) ([]string, error) {
 	return issueBody, nil
 }
 
-func makeIssue(owner, repo string, token string) (string, error) {
+func makeReleaseMessage(templateFile string, version string) (string, error) {
+
+	t, err := template.ParseFiles(templateFile)
+	if err != nil {
+		return "Template Parse File Issue: ", err
+	}
+	message := IssueMessage{version}
+
+	var buf bytes.Buffer
+
+	err = t.Execute(&buf, message)
+	if err != nil {
+		return "Template issue: ", err
+	}
+
+	return buf.String(), nil
+
+}
+
+func makeIssue(owner, repo string, version string, templateFile string, token string) (string, error) {
 
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: token},
@@ -83,8 +104,28 @@ func makeIssue(owner, repo string, token string) (string, error) {
 	client := github.NewClient(tc)
 	ctx := context.Background()
 
-	title := "Release v1.4.0"
-	message := "Release v1.4.0-rc.0"
+	t, err := template.ParseFiles(templateFile)
+	if err != nil {
+		return "Template Parse File Issue: ", err
+	}
+	ghIssue := IssueMessage{version}
+
+	var buf bytes.Buffer
+
+	err = t.ExecuteTemplate(&buf, "Message", ghIssue)
+	if err != nil {
+		return "Could not make the Message: ", err
+	}
+	message := buf.String()
+	buf.Reset()
+
+	err = t.ExecuteTemplate(&buf, "Title", ghIssue)
+	if err != nil {
+		return "Could not make the title: ", err
+	}
+	title := buf.String()
+	buf.Reset()
+
 	body := &github.IssueRequest{
 		Title:    &title,
 		Body:     &message,
