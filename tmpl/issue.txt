@@ -1,0 +1,39 @@
+{{define "Title" }} 🚀 🤖 Release {{.Release}} {{end}}
+{{define "Assignee"}}plaroche{{end}}
+{{define "Message"}}
+Release {{.Release}}
+
+Release Criteria
+
+- [ ] Change Log prepared
+- [ ] All builds passing  [travis.ci](https://travis-ci.com/manifoldco/marketplace/branches)
+- [ ] verify tag is on [hub.docker.com](https://hub.docker.com/r/arigato/catalog/tags/)
+- [ ] <version> branch made and tvar files changed for ONLY version change
+- [ ] Apply migrations
+- [ ]  Plan to *stage*
+- [ ]  Apply to *stage*
+- [ ] Apply degraffdb (and migrations)
+- [ ]  QA Checklist Complete (using newly built, on tag, testers in marketplace) (make sure you have all required keys in your local manifold context)
+  - [ ]  `manifold run -m ./tools/bin/provision-tester -e https://stage.manifold.co -p degraffdb-generators-stage `
+   **Expected outcome**: success on all ops
+  - [ ]  `manifold run -m ./tools/bin/provision-tester -e https://stage.manifold.co -p degraffdb-generators-stage -o static --skip-billing-profile`
+   **Expected outcome**: first op success, resize fails: `putOperationsIdUnauthorized  unauthorized: Billing profile required for paid plans`
+  - [ ]  `torus view -v -o dogfood -p degraffdb -e stage; manifold run -m ./tools/bin/connector-tester -e https://stage.manifold.co -p degraffdb-generators-stage`
+   **Expected outcome**: success on all ops
+  - [ ] check service listing on [stage.m.co](https://www.stage.manifold.co/services)
+- [ ]  All bugs fixed or triaged
+
+*If proceeding to Prod deploy, tag without RC*
+
+
+- [ ] Plan then Apply to *prod*
+- [ ] QA Checklist Complete
+- [ ] provisioning degraff via dashboard
+- [ ] check service listing on [m.co](https://www.manifold.co/services)
+- [ ] check sso, inspect element, on the provisioned degraffdb
+
+Changelog
+```
+git shortlog {{.Release}}.. --no-merges
+```
+{{end}}
