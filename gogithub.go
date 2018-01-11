@@ -76,26 +76,7 @@ func getAllCommitID(owner, repo string, token string) ([]string, error) {
 	return issueBody, nil
 }
 
-func makeReleaseMessage(templateFile string, version string) (string, error) {
-
-	t, err := template.ParseFiles(templateFile)
-	if err != nil {
-		return "Template Parse File Issue: ", err
-	}
-	message := IssueMessage{version}
-
-	var buf bytes.Buffer
-
-	err = t.Execute(&buf, message)
-	if err != nil {
-		return "Template issue: ", err
-	}
-
-	return buf.String(), nil
-
-}
-
-func makeIssue(owner, repo string, version string, templateFile string, token string) (string, error) {
+func makeIssue(owner, repo, version, templateFile, token string) (string, error) {
 
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: token},
