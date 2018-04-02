@@ -8,15 +8,19 @@ Release Criteria
 - [ ] Change Log prepared
 - [ ] All builds passing  [travis.ci](https://travis-ci.com/manifoldco/marketplace/branches)
 - [ ] verify tag is on [hub.docker.com](https://hub.docker.com/r/arigato/catalog/tags/)
-- [ ] <version> branch made and tvar files changed for ONLY version change
-- [ ] Apply migrations
-- [ ]  Plan to *stage*
-- [ ]  Apply to *stage*
-- [ ] Apply degraffdb (and migrations)
+- [ ] <version> branch made
+- [ ] Release to stage:
+  ```
+  ./releasor.sh -p marketplace -e stage {{.Release}}
+  rm manifests/stage/*-e
+  git diff
+  ./deploy stage
+  ```
+- [ ] Apply degraffdb (and migrations) **legacy infra code process to be followed**
 - [ ]  QA Checklist Complete (using newly built, on tag, testers in marketplace) (make sure you have all required keys in your local manifold context)
-  - [ ]  `manifold run -m ./tools/bin/provision-tester -e https://stage.manifold.co -p degraffdb-generators-stage `
+  - [ ]  `manifold run -m -p marketplace-stage ./tools/bin/provision-tester -e https://stage.manifold.co -p degraffdb-generators-stage `
    **Expected outcome**: success on all ops
-  - [ ]  `manifold run -m ./tools/bin/provision-tester -e https://stage.manifold.co -p degraffdb-generators-stage -o static --skip-billing-profile`
+  - [ ]  `manifold run -m -p marketplace-stage ./tools/bin/provision-tester -e https://stage.manifold.co -p degraffdb-generators-stage -o static --skip-billing-profile`
    **Expected outcome**: first op success, resize fails: `putOperationsIdUnauthorized  unauthorized: Billing profile required for paid plans`
   - [ ]  `torus view -v -o dogfood -p degraffdb -e stage; manifold run -m ./tools/bin/connector-tester -e https://stage.manifold.co -p degraffdb-generators-stage`
    **Expected outcome**: success on all ops
@@ -26,7 +30,7 @@ Release Criteria
 *If proceeding to Prod deploy, tag without RC*
 
 
-- [ ] Plan then Apply to *prod*
+- [ ] Redo the release steps above, but against prod
 - [ ] QA Checklist Complete
 - [ ] provisioning degraff via dashboard
 - [ ] check service listing on [m.co](https://www.manifold.co/services)
