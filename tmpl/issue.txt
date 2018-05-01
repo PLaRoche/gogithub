@@ -11,17 +11,20 @@ Release Criteria
 - [ ] <version> branch made
 - [ ] Release to stage:
   ```
-  ./releaser.sh -p marketplace -e stage {{.Release}}-rc.0
+  ./releaser.sh -p marketplace -e stage {{.Release}}-rc.0 # the rc may need to be different
   git diff
+  kubectl get deploy -w # watch the deployments in another terminal
   ./deploy stage
   ```
 - [ ] Apply degraffdb (and migrations) **legacy infra code process to be followed**
 - [ ]  QA Checklist Complete (using newly built, on tag, testers in marketplace) (make sure you have all required keys in your local manifold context)
-  - [ ]  `manifold run -m -p marketplace-stage ./tools/bin/provision-tester -e https://stage.manifold.co -p degraffdb-generators-stage `
+  - [ ] `make tools` in marketplace
+  - [ ]  `manifold run -m -p marketplace-stage ./tools/bin/provision-tester -e https://stage.manifold.co -p degraffdb-generators-stage --internal-auth-secret=<the_one_from_manifold> --stripe-key=<the_one_from_manifold>`
    **Expected outcome**: success on all ops
-  - [ ]  `manifold run -m -p marketplace-stage ./tools/bin/provision-tester -e https://stage.manifold.co -p degraffdb-generators-stage -o static --skip-billing-profile`
+  - [ ]  `manifold run -m -p marketplace-stage ./tools/bin/provision-tester -e https://stage.manifold.co -p degraffdb-generators-stage -o static --skip-billing-profile --internal-auth-secret=<the_one_from_manifold> --stripe-key=<the_one_from_manifold>`
    **Expected outcome**: first op success, resize fails: `putOperationsIdUnauthorized  unauthorized: Billing profile required for paid plans`
-  - [ ]  `torus view -v -o dogfood -p degraffdb -e stage; manifold run -m ./tools/bin/connector-tester -e https://stage.manifold.co -p degraffdb-generators-stage`
+  - [ ] view oauth2 client ID and secret `kubectl describe secret/manifold-oauth2`
+  - [ ]  `manifold export -t manifold -p degraffdb-stage ./tools/bin/connector-tester -e https://stage.manifold.co -p degraffdb-generators-stage`
    **Expected outcome**: success on all ops
   - [ ] check service listing on [stage.m.co](https://www.stage.manifold.co/services)
 - [ ]  All bugs fixed or triaged
@@ -39,4 +42,5 @@ Changelog
 ```
 git shortlog {{.Release}}.. --no-merges
 ```
+*You may have to use a previous version to see commits up to this*
 {{end}}

@@ -20,7 +20,7 @@ ci: $(LINTERS) build
 
 BOOTSTRAP=\
 	github.com/golang/lint/golint \
-	honnef.co/go/simple/cmd/gosimple \
+	honnef.co/go/tools/cmd/gosimple \
 	github.com/client9/misspell/cmd/misspell \
 	github.com/gordonklaus/ineffassign \
 	github.com/tsenart/deadcode \
