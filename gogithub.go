@@ -5,11 +5,12 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"os"
+	"text/template"
+
 	"github.com/google/go-github/github"
 	"golang.org/x/net/context"
 	"golang.org/x/oauth2"
-	"os"
-	"text/template"
 )
 
 // IssueMessage : a simple struct to hold all the components of an issue
@@ -22,7 +23,7 @@ func main() {
 		owner      = flag.String("o", "owner", "owner name")
 		repository = flag.String("r", "repository", "repositoryName")
 		version    = flag.String("v", "version", "version tag")
-		fileName   = flag.String("f", "filename", "template file")
+		fileName   = flag.String("f", "tmpl/issue.txt", "template file")
 	)
 	flag.Parse()
 

@@ -1,12 +1,12 @@
 hash: da65f10ee2f295e6db191b1722622d0913ac170835a50f0c5488e3ea8f179d3e
-updated: 2017-04-24T16:31:35.127184558-03:00
+updated: 2018-05-01T11:05:23.11952711-03:00
 imports:
 - name: github.com/golang/protobuf
-  version: 2bba0603135d7d7f5cb73b2125beeda19c09f4ef
+  version: b4deda0973fb4c70b50d226b1af49f3da59f5265
   subpackages:
   - proto
 - name: github.com/google/go-github
-  version: 2966f2579cd93bc62410f55ba6830b3925e7629d
+  version: 29336dbceeab3a9b7e075b90d8b6d991d1bb5da2
   subpackages:
   - github
 - name: github.com/google/go-querystring
@@ -14,22 +14,21 @@ imports:
   subpackages:
   - query
 - name: golang.org/x/net
-  version: d1e1b351919c6738fdeb9893d5c998b161464f0c
+  version: 5f9ae10d9af5b1c89ae6904293b14b064d4ada23
   subpackages:
   - context
+  - context/ctxhttp
 - name: golang.org/x/oauth2
-  version: 7fdf09982454086d5570c7db3e11f360194830ca
+  version: 6881fee410a5daf86371371f9ad451b95e168b71
   subpackages:
   - internal
 - name: google.golang.org/appengine
-  version: 170382fa85b10b94728989dfcf6cc818b335c952
+  version: 962cbd1200af94a5a35ba8d512e9f91271b4d01a
   subpackages:
   - internal
-  - internal/app_identity
   - internal/base
   - internal/datastore
   - internal/log
-  - internal/modules
   - internal/remote_api
   - internal/urlfetch
   - urlfetch
