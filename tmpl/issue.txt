@@ -11,8 +11,7 @@ Release Criteria
 - [ ] <version> branch made
 - [ ] Release to stage:
   ```
-  ./releasor.sh -p marketplace -e stage {{.Release}}
-  rm manifests/stage/*-e
+  ./releaser.sh -p marketplace -e stage {{.Release}}-rc.0
   git diff
   ./deploy stage
   ```
