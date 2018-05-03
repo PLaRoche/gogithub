@@ -18,13 +18,13 @@ Release Criteria
   ```
 - [ ] Apply degraffdb (and migrations) **legacy infra code process to be followed**
 - [ ]  QA Checklist Complete (using newly built, on tag, testers in marketplace) (make sure you have all required keys in your local manifold context)
-  - [ ] `make tools` in marketplace
+  - [ ] cd to marketplace and `make tools` in marketplace
   - [ ]  `manifold run -m -p marketplace-stage ./tools/bin/provision-tester -e https://stage.manifold.co -p degraffdb-generators-stage --internal-auth-secret=<the_one_from_manifold> --stripe-key=<the_one_from_manifold>`
    **Expected outcome**: success on all ops
   - [ ]  `manifold run -m -p marketplace-stage ./tools/bin/provision-tester -e https://stage.manifold.co -p degraffdb-generators-stage -o static --skip-billing-profile --internal-auth-secret=<the_one_from_manifold> --stripe-key=<the_one_from_manifold>`
    **Expected outcome**: first op success, resize fails: `putOperationsIdUnauthorized  unauthorized: Billing profile required for paid plans`
-  - [ ] view oauth2 client ID and secret `kubectl describe secret/manifold-oauth2`
-  - [ ]  `manifold export -t manifold -p degraffdb-stage ./tools/bin/connector-tester -e https://stage.manifold.co -p degraffdb-generators-stage`
+  - [ ] view oauth2 client ID and secret `kubectl describe secret/manifold-oauth2` or `manifold export -t manifold -p degraffdb-stage`
+  - [ ]  `manifold run -t manifold -p degraffdb-stage -- ./tools/bin/connector-tester -e https://stage.manifold.co -p degraffdb-generators-stage`
    **Expected outcome**: success on all ops
   - [ ] check service listing on [stage.m.co](https://www.stage.manifold.co/services)
 - [ ]  All bugs fixed or triaged
