@@ -40,7 +40,7 @@ Release Criteria
 
 Changelog
 ```
-git shortlog {{.Release}}.. --no-merges
+git shortlog <previous_release>..{{.Release}} --no-merges
 ```
 *You may have to use a previous version to see commits up to this*
 {{end}}
